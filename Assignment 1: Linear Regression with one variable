@@ -52,3 +52,14 @@ J = computeCost(theta, X, y)#Cost function
 print('With theta = [0, 0] \nCost computed = %.2f' % J)
 
 #Gradient descent (d)
+def gradientDescent(X, y, theta, alpha, iterations):
+    for _ in range(iterations):
+        temp = np.dot(X, theta) - y
+        temp = np.dot(X.T, temp)
+        theta = theta - (alpha/m) * temp
+    return theta
+    
+theta = gradientDescent(X, y, theta, alpha, iterations)
+print(theta)
+J = computeCost(theta, X, y)
+print(J)
