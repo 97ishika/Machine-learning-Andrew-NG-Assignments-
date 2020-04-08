@@ -1,0 +1,48 @@
+#import the necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+#Reading the file 
+data = pd.read_csv("/kaggle/input/week-1-ml-andrew-ng/ex1data1.txt", delimiter = ',')
+X = data.iloc[:, 0] #independent variable
+y = data.iloc[:, 1] #dependent variable
+data.columns = ['Population', 'Profit']
+
+#Plotting the data
+plt.scatter(X, y, color = 'red')
+plt.xlabel("Population of City (10,000s)")
+plt.ylabel("Profit ($10,000")
+plt.title("Profit Vs Population")
+
+#Cost Function
+def computeCost(X, y, theta):
+    
+    m = len(y)
+    hypothesis_function = X.dot(theta)
+    squared_error = (hypothesis_function - y) ** 2
+    cost_function = float(1/ (2 * m) * np.sum(squared_error))
+    return cost_function
+    
+X = X[:, np.newaxis]
+y = y[:, np.newaxis] #converting rank 1 to rank 2 array to avoid errors
+theta = np.zeros([2,1]) #initializing theta to (0, 0)
+iterations = 1500
+alpha = 0.01 #initializing the learning rate
+m = len(y) #number of training examples
+ones = np.ones((m, 1))
+X = np.hstack((ones, X)) # adding the intercept term
+
+print(computeCost(X, y, theta))
+
+#Gradient Descent
+def gradientDescent(X, y, theta, alpha, iterations):
+    for i in range(iterations): #updating theta till convergence
+        hypothesis_function = np.dot(X, theta)
+        error = np.dot(X, theta) - y
+        cost_function_derivative = np.dot(X.T, error)
+        theta = theta - (alpha/m) * cost_function_derivative #updating theta
+    return theta
+theta = gradientDescent(X, y, theta, alpha, iterations)
+print(theta)
+computeCost(X, y, theta)
