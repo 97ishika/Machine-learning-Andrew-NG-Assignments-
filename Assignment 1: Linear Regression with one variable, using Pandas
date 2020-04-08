@@ -46,3 +46,12 @@ def gradientDescent(X, y, theta, alpha, iterations):
 theta = gradientDescent(X, y, theta, alpha, iterations)
 print(theta)
 computeCost(X, y, theta)
+
+#Best fit line
+X1 = X[:, 1] #X(0) = 1
+plt.scatter(X1, y)
+plt.xlabel('Population of City in 10,000s')
+plt.ylabel('Profit in $10,000s')
+hypothesis_function = np.dot(X, theta)
+plt.plot(X1, hypothesis_function)
+plt.show()
