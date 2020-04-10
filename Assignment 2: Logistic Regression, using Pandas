@@ -1,0 +1,94 @@
+  
+import numpy as np # linear algebra
+import pandas as pd # data processing
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("/kaggle/input/ml-week-2/ex2data2.txt", delimiter = ',')
+data.head()
+
+X = data.iloc[:, 0:2] #independent variables
+y = data.iloc[:, 2] #dependent variables
+
+#Sigmoid function
+def sigmoid(z):
+    g = 1 / (1 + np.exp(-z))
+    
+    return g
+sigmoid(0)
+
+#Cost function
+def costFunction(X, y, theta):
+       
+    m = len(y)
+    hypothesis_function = sigmoid(np.dot(X,theta))
+    error = (- np.multiply(y, np.log(hypothesis_function))) - (np.multiply((1 - y), np.log(1 - hypothesis_function)))
+    cost_function = 1/m * np.sum(error)    
+    return cost_function
+    
+    
+#Gradient function
+def gradient(X, y, theta):
+    gradient_descent = 1/m * np.dot(X.transpose(),(sigmoid(np.dot(X,theta)) - y)) #hypothesis fn - y
+    return gradient_descent
+    
+    
+#Compute cost and gradient descent for initial theta
+(m, n) = X.shape
+X = np.hstack((np.ones((m, 1)), X))
+y = y[:, np.newaxis] #Changing rank to second order to avoid errors
+theta = np.zeros((n + 1, 1)) # intializing theta with all zeros 
+print(costFunction(X, y, theta))
+print(gradient(X, y, theta))
+
+#Feature normalisation
+def featureNormalization(X):
+    mean = np.mean(X, axis = 0)
+    std = np.std(X,axis = 0)
+    
+    X_normalised = (X - mean)/ std
+    
+    return X_normalised , mean , std
+
+def gradientDescent(X, y, theta, alpha, iterations):   
+    m = len(y)
+    J_history = []
+    
+    for i in range(iterations):
+        cost, grad = costFunction(theta,X,y)
+        theta = theta - (alpha * grad)
+        J_history.append(cost)
+    
+    return theta , J_history
+    
+plt.scatter(X[pos[:,0],1],X[pos[:,0],2],c="r",marker="+",label="Admitted")
+plt.scatter(X[neg[:,0],1],X[neg[:,0],2],c="b",marker="x",label="Not admitted")
+x_value= np.array([np.min(X[:,1]),np.max(X[:,1])])
+y_value=-(theta[0] +theta[1]*x_value)/theta[2]
+plt.plot(x_value,y_value, "r")
+plt.xlabel("Exam 1 score")
+plt.ylabel("Exam 2 score")
+plt.legend(loc=0)
+
+#prediction
+x_test = np.array([45,85])
+x_test = featureNormalization(x_test)
+x_test = np.append(np.ones(1), x_test)
+probability = sigmoid(x_test.dot(theta))
+print("For a student with scores 45 and 85, we predict an admission probability of",probability[0])
+
+#Accuracy calculation
+def classifierPredict(theta,X):
+    """
+    take in numpy array of theta and X and predict the class 
+    """
+    hypothesis_function = X.dot(theta)
+    
+    return hypothesis_function > 0
+p = classifierPredict(theta,X)
+print("Train Accuracy:", sum(p == y)[0],"%")
+
+
+
+
+    
+    
