@@ -1,39 +1,38 @@
-import numpy as np # linear algebra
-import pandas as pd # data processing
+import numpy as np# linear algebra
+import pandas as pd# data processing
 
-data = pd.read_csv("/kaggle/input/week-1-ml-andrew-ng/ex1data2.txt", delimiter = ',') #reading the data
-X = data.iloc[:, 0:2] #independent variables
-y = data.iloc[:, 2] #dependent variables
+data = pd.read_csv("/kaggle/input/week-1-ml-andrew-ng/ex1data2.txt", delimiter = ',')# reading the data
+X = data.iloc[: , 0: 2]# independent variables
+y = data.iloc[: , 2]# dependent variables
 
-m = len(y)
-#Normalisation
-X = (X - np.mean(X))/ np.std(X)
+m = len(y)# Normalisation
+X = (X - np.mean(X)) / np.std(X)
 
-ones = np.ones((m,1)) #Adding a colum n of 1's to X
+ones = np.ones((m, 1))# Adding a colum n of 1 's to X
 X = np.hstack((ones, X))
 alpha = 0.01
 iterations = 400
-theta = np.zeros((3,1))
-y = y[:,np.newaxis] #Changing the rank to 2 to avoid errors
+theta = np.zeros((3, 1))
+y = y[: , np.newaxis]# Changing the rank to 2 to avoid errors
 
 def computeCostMulti(X, y, theta):
-    hypothesis_function = np.dot(X, theta)
-    error = hypothesis_function - y
-    cost_function = np.sum(np.power(error, 2)) / (2 * m)
+  hypothesis_function = np.dot(X, theta)
+error = hypothesis_function - y
+cost_function = np.sum(np.power(error, 2)) / (2 * m)
 return cost_function
 
 J = computeCostMulti(X, y, theta)
 print(J)
 
 def gradientDescentMulti(X, y, theta, alpha, iterations):
-    m = len(y)
-    for _ in range(iterations):
-        hypothesis_function = np.dot(X, theta)
-        error = hypothesis_function - y
-        cost_function_derivative = np.dot(X.T, error)
-        theta = theta - (alpha/m) * cost_function_derivative #updating theta
-    return theta
-    
+  m = len(y)
+for _ in range(iterations):
+  hypothesis_function = np.dot(X, theta)
+error = hypothesis_function - y
+cost_function_derivative = np.dot(X.T, error)
+theta = theta - (alpha / m) * cost_function_derivative# updating theta
+return theta
+
 theta = gradientDescentMulti(X, y, theta, alpha, iterations)
 print(theta)
 
